@@ -3,8 +3,8 @@ from langchain.embeddings import CacheBackedEmbeddings, HuggingFaceEmbeddings
 from langchain.vectorstores import FAISS
 from langchain.storage import LocalFileStore
 from langchain.retrievers import BM25Retriever, EnsembleRetriever
-from langchain.document_loaders import PyPDFLoader, DirectoryLoader, TextLoader
-from langchain.llms import HuggingFacePipeline
+from langchain_community.document_loaders import PyPDFLoader, DirectoryLoader, TextLoader
+from langchain_community.llms import HuggingFacePipeline
 from langchain.cache import InMemoryCache
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.schema import prompt
@@ -28,7 +28,7 @@ embedder = CacheBackedEmbeddings.from_bytes_store(core_embedding_model,
 
 model_name_or_path = "TheBloke/Mistral-7B-Instruct-v0.1-GPTQ"
 
-model = AutoModelForCausalLM.from_pretrained(model_name_or_path, device_map="auto", trust_remote_code=False)
+model = AutoModelForCausalLM.from_pretrained(model_name_or_path, device_map="mps", trust_remote_code=False)
 
 tokenizer = AutoTokenizer.from_pretrained(model_name_or_path, use_fast=True)
 
@@ -61,9 +61,9 @@ helpful answer:
 input_variable = ["context", "question"]
 custom_prompt = PromptTemplate(template=PROMPT_TEMPLATE, input_variables=input_variable)
 
-document_name = ""
+document_name = "leases.pdf"
 filepath = os.path.join(path, document_name)
-loader = TextLoader(filepath)   
+loader = PyPDFLoader(document_name)   
 pages = loader.load()
 text_splitter = RecursiveCharacterTextSplitter(
     chunk_size=500,
