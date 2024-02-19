@@ -106,3 +106,5 @@ def generative_llm(path, query):
 
 
 
+if __name__ == "__main__":
+    generative_llm("Path with all text files", "Question")
