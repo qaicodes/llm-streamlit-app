@@ -1,27 +1,26 @@
 import streamlit as st
-import json
+from PyPDF2 import PdfReader
+from llm import generative_llm
+def process_pdf_and_answer(file, question):
+    reader = PdfReader(file)
+    text = ""
+    for page in reader.pages:
+        text += page.extract_text() + "\n"
+    return your_backend_function(text, question)  # Call your function directly
 
-# Basic UI Setup
-st.title("FUZE")
-st.header("Upload a PDF file for processing")
+generative_llm("path", "question")
 
+st.title("LEGAL GenAI")
 
+uploaded_file = st.file_uploader("Choose a PDF or text file", type=["pdf", "txt"])
+question = st.text_input("Ask your question about the document:")
 
-# File Uploader
-uploaded_file = st.file_uploader("Choose a file")
+if uploaded_file and question:
+    if uploaded_file.type == "application/pdf":
+        answer = process_pdf_and_answer(uploaded_file, question)
+    else:  # It's a text file
+        text = uploaded_file.read().decode()
+        answer = your_backend_function(text, question)
 
-# Processing Logic Placeholder
-if uploaded_file is not None:
-    # Placeholder: Replace with your actual file processing logic
-    try:
-        file_contents = uploaded_file.getvalue()  # May need decoding if not plain text
-        processed_data = "hello"
-        result_json = json.dumps(processed_data, indent=4) 
-
-        # Display JSON Output
-        st.subheader("Processed JSON Result")
-        st.code(result_json)
-
-    except Exception as e:
-        st.error(f"An error occurred during processing: {e}")
-
+    st.write("Answer:")
+    st.write(answer)  # Directly display the answer 
